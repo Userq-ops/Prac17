@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Галерея изображений</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<style>
+    body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.menu {
+    width: 0;
+    height: 100%;
+    background-color: #333;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-x: hidden;
+    transition: 0.5s;
+}
+
+.menu ul {
+    list-style: none;
+    padding: 0;
+}
+
+.menu ul li {
+    padding: 20px;
+}
+
+.menu ul li a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    font-size: 18px;
+}
+
+#toggle-menu {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+    font-size: 20px;
+    
+}
+
+
+
+
+
+
+.animated-element {
+    width: 50px;
+    height: 50px;
+    background-color: #db34bf;
+    position: absolute;
+    top: 50%;
+    left: 0;
+}
+
+
+#element {
+  width: 100px;
+  height: 100px;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+#element:hover {
+  width: 200px;
+  height: 200px;
+  background-color: #ff0000;
+}
+</style>
+<body>
+    <!-- 1 -->
+  <div id="gallery" style="position: relative; top: 50%; left: 40%; width: 350px">
+    <img style="width: 350px;" src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Flag_of_Germany.svg" alt="Изображение 1">
+    <img style="width: 350px;" src="https://i0.wp.com/www.armgeo.am/wp-content/uploads/2020/04/flag_of_german_reich_1935e280931945-svg.jpg?w=1200&ssl=1" alt="">
+    <img style="width: 350px;" src="https://img.gazeta.ru/files3/549/13126549/hit-pic4_zoom-1500x1500-6364.jpg" alt="">
+  </div>
+  <button style="position: relative; top: 50%; left: 40%;" id="prev">Предыдущее</button>
+  <button style="position: relative; top: 50%; left: 40%; margin-left: 150px;" id="next">Следующее</button>
+
+
+  <!-- 2 -->
+  <div id="element">
+    <h1>Наведи курсор</h1>
+  </div>
+
+
+<!-- 3 -->
+  <div class="animated-element"></div>
+
+
+
+  <!-- 4 -->
+  <a id="toggle-menu">Меню</a>
+    <div id="menu" class="menu">
+        <ul>
+            <li><a href="#">Главное</a></li>
+            <li><a href="#">О нас</a></li>
+            <li><a href="#">Помощь</a></li>
+        </ul>
+    </div>
+
+
+
+    <!-- 5 -->
+    <h1>Отправить данные на Сервак</h1>
+    <form id="myForm">
+        <label for="name">Имя:</label>
+        <input type="text" id="name" name="name" required>
+        <br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <br>
+        <input type="submit" value="Отправить">
+    </form>
+    <div id="response"></div>
+  <script>
+    // 1
+    var images = document.querySelectorAll("#gallery img");
+    var currentImage = 0;
+
+    $("#prev").on("click", function() {
+      currentImage--;
+      if (currentImage < 0) {
+        currentImage = images.length - 1;
+      }
+      showImage(currentImage);
+    });
+
+    $("#next").on("click", function() {
+      currentImage++;
+      if (currentImage >= images.length) {
+        currentImage = 0;
+      }
+      showImage(currentImage);
+    });
+
+
+    function showImage(index) {
+      images[index].style.display = "block";
+      for (var i = 0; i < images.length; i++) {
+        if (i != index) {
+          images[i].style.display = "none";
+        }
+      }
+    }
+
+
+
+
+    // 2
+    document.querySelector("#element").addEventListener("mouseover", function() {
+    this.style.transition = "width 0.5s ease-in-out, height 0.5s ease-in-out, background-color 0.5s ease-in-out";
+    this.style.width = "200px";
+    this.style.height = "200px";
+    this.style.backgroundColor = "#32a852";
+});
+
+document.querySelector("#element").addEventListener("mouseout", function() {
+    this.style.transition = "width 0.5s ease-in-out, height 0.5s ease-in-out, background-color 0.5s ease-in-out";
+    this.style.width = "100px";
+    this.style.height = "100px";
+    this.style.backgroundColor = "#329ea8";
+});
+
+
+
+
+// 3
+    const element = document.querySelector(".animated-element");
+const screenWidth = window.innerWidth;
+const speed = 5; 
+
+function moveElement() {
+    let leftPosition = parseInt(getComputedStyle(element).left);
+
+    if (leftPosition > screenWidth) {
+        element.style.left = "-50px"; 
+    } else {
+        element.style.left = (leftPosition + speed) + "px";
+    }
+
+    requestAnimationFrame(moveElement);
+}
+
+moveElement();
+
+
+
+
+    // 4
+    const toggleButton = document.getElementById("toggle-menu");
+const menu = document.getElementById("menu");
+
+toggleButton.addEventListener("click", () => {
+    if (menu.style.width === "250px") {
+        menu.style.width = "0";
+    } else {
+        menu.style.width = "250px";
+    }
+});
+
+
+
+
+
+
+
+// 5
+document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById("myForm");
+    const responseDiv = document.getElementById("response");
+
+    form.addEventListener("submit", function(e) {
+        e.preventDefault(); 
+
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+
+        const data = {
+            name: name,
+            email: email
+        };
+
+        const xhr = new XMLHttpRequest();
+
+        xhr.open("POST", "https://jsonplaceholder.typicode.com/posts", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        xhr.onload = function() {
+            if (xhr.status === 201) {
+                const responseData = JSON.parse(xhr.responseText);
+                responseDiv.innerHTML = `Сервак вернул следующие данные: <pre>${JSON.stringify(responseData, null, 2)}</pre>`;
+            } else {
+                responseDiv.innerHTML = "Ошибка: " + xhr.status;
+            }
+        };
+
+        xhr.send(JSON.stringify(data));
+    });
+});
+
+
+  </script>
+</body>
+</html>
